@@ -1,250 +1,306 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
 
-<title>Create Task</title><link rel="stylesheet"
-      href="css/style.css"><script src="https://telegram.org/js/telegram-web-app.js"></script></head><body><div class="container"><!-- HEADER -->
+<head>
 
-<div class="header">
+    <meta charset="UTF-8">
 
-    <div class="logo">
-        ➕ Create Task
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Create Task</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <div class="logo">
+                ➕ Create Task
+            </div>
+
+        </div>
+
+        <!-- CREATE FORM -->
+
+        <div class="card">
+
+            <h3>Create New Task</h3>
+
+            <br>
+
+            <!-- TASK TYPE -->
+
+            <label class="small">
+                Task Type
+            </label>
+
+            <br><br>
+
+            <select id="taskType" class="select">
+
+                <option value="Telegram">
+                    Telegram
+                </option>
+
+                <option value="YouTube">
+                    YouTube
+                </option>
+
+                <option value="Facebook">
+                    Facebook
+                </option>
+
+                <option value="TikTok">
+                    TikTok
+                </option>
+
+                <option value="Website">
+                    Website Visit
+                </option>
+
+            </select>
+
+            <br><br>
+
+            <!-- REWARD -->
+
+            <label class="small">
+                Reward Per Worker
+            </label>
+
+            <br><br>
+
+            <input
+                type="number"
+                id="reward"
+                class="input"
+                placeholder="Example: 5">
+
+            <br><br>
+
+            <!-- WORKERS -->
+
+            <label class="small">
+                Total Workers
+            </label>
+
+            <br><br>
+
+            <input
+                type="number"
+                id="workers"
+                class="input"
+                placeholder="Minimum 10">
+
+            <br><br>
+
+            <!-- DURATION -->
+
+            <label class="small">
+                Duration (Days)
+            </label>
+
+            <br><br>
+
+            <input
+                type="number"
+                id="duration"
+                class="input"
+                placeholder="Maximum 7">
+
+            <br><br>
+
+            <!-- TASK LINK -->
+
+            <label class="small">
+                Task Link
+            </label>
+
+            <br><br>
+
+            <input
+                type="url"
+                id="taskLink"
+                class="input"
+                placeholder="https://">
+
+            <br><br>
+
+            <!-- INSTRUCTIONS -->
+
+            <label class="small">
+                Instructions
+            </label>
+
+            <br><br>
+
+            <textarea
+                id="instructions"
+                class="textarea"
+                placeholder="Explain what workers need to do..."></textarea>
+
+            <br><br>
+
+            <!-- PROOF REQUIREMENTS -->
+
+            <label class="small">
+                Proof Requirements
+            </label>
+
+            <br><br>
+
+            <div id="proofContainer">
+
+                <div class="proof-item">
+
+                    <select class="select proof-type">
+
+                        <option value="text">
+                            Text Proof
+                        </option>
+
+                        <option value="screenshot">
+                            Screenshot Proof
+                        </option>
+
+                    </select>
+
+                    <br><br>
+
+                    <input
+                        type="text"
+                        class="input proof-label"
+                        placeholder="Example: Telegram Username">
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <button
+                type="button"
+                id="addProofBtn"
+                class="btn btn-secondary">
+
+                + Add Proof Requirement
+
+            </button>
+
+            <br><br>
+
+        </div>
+
+        <!-- COST SUMMARY -->
+
+        <div class="card">
+
+            <h3>
+                Cost Summary
+            </h3>
+
+            <br>
+
+            <div class="task-meta">
+
+                <span>
+                    Reward:
+                </span>
+
+                <span id="rewardPreview">
+                    ৳0
+                </span>
+
+            </div>
+
+            <br>
+
+            <div class="task-meta">
+
+                <span>
+                    Workers:
+                </span>
+
+                <span id="workerPreview">
+                    0
+                </span>
+
+            </div>
+
+            <br>
+
+            <div class="task-meta">
+
+                <span>
+                    Total Cost:
+                </span>
+
+                <span
+                    id="totalCost"
+                    class="task-reward">
+
+                    ৳0
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- CREATE BUTTON -->
+
+        <button
+            id="createTaskBtn"
+            class="btn btn-primary">
+
+            Create Task
+
+        </button>
+
+        <br><br><br><br><br>
+
     </div>
 
-</div>
+    <!-- BOTTOM NAV -->
 
+    <div class="bottom-nav">
 
-<!-- CREATE FORM -->
+        <a href="index.html">
+            Home
+        </a>
 
-<div class="card">
+        <a href="myoffers.html">
+            My Offers
+        </a>
 
-    <h3>Create New Task</h3>
+        <a href="createoffer.html"
+            class="active">
+            Create
+        </a>
 
-    <br>
+        <a href="mytasks.html">
+            My Tasks
+        </a>
 
-    <!-- TASK TYPE -->
-
-    <label class="small">
-        Task Type
-    </label>
-
-    <br><br>
-
-    <select
-        id="taskType"
-        class="select">
-
-        <option value="Telegram">
-            Telegram
-        </option>
-
-        <option value="YouTube">
-            YouTube
-        </option>
-
-        <option value="Facebook">
-            Facebook
-        </option>
-
-        <option value="TikTok">
-            TikTok
-        </option>
-
-        <option value="Website">
-            Website Visit
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <!-- REWARD -->
-
-    <label class="small">
-        Reward Per Worker
-    </label>
-
-    <br><br>
-
-    <input
-        type="number"
-        id="reward"
-        class="input"
-        placeholder="Example: 5">
-
-    <br><br>
-
-    <!-- WORKERS -->
-
-    <label class="small">
-        Total Workers
-    </label>
-
-    <br><br>
-
-    <input
-        type="number"
-        id="workers"
-        class="input"
-        placeholder="Minimum 10">
-
-    <br><br>
-
-    <!-- DURATION -->
-
-    <label class="small">
-        Duration (Days)
-    </label>
-
-    <br><br>
-
-    <input
-        type="number"
-        id="duration"
-        class="input"
-        placeholder="Maximum 7">
-
-    <br><br>
-
-    <!-- TASK LINK -->
-
-    <label class="small">
-        Task Link
-    </label>
-
-    <br><br>
-
-    <input
-        type="url"
-        id="taskLink"
-        class="input"
-        placeholder="https://">
-
-    <br><br>
-
-    <!-- INSTRUCTIONS -->
-
-    <label class="small">
-        Instructions
-    </label>
-
-    <br><br>
-
-    <textarea
-        id="instructions"
-        class="textarea"
-        placeholder="Explain what workers need to do...">
-    </textarea>
-
-    <br><br>
-
-    <!-- PROOF -->
-
-    <label class="small">
-        Proof Requirements
-    </label>
-
-    <br><br>
-
-    <textarea
-        id="proof"
-        class="textarea"
-        placeholder="Example: Screenshot after joining">
-    </textarea>
-
-    <br><br>
-
-</div>
-
-
-<!-- COST CARD -->
-
-<div class="card">
-
-    <h3>
-        Cost Summary
-    </h3>
-
-    <br>
-
-    <div class="task-meta">
-
-        <span>
-            Reward:
-        </span>
-
-        <span id="rewardPreview">
-            ৳0
-        </span>
+        <a href="profile.html">
+            Profile
+        </a>
 
     </div>
 
-    <br>
+    <script src="js/core.js"></script>
+    <script src="js/createoffer.js"></script>
 
-    <div class="task-meta">
+</body>
 
-        <span>
-            Workers:
-        </span>
-
-        <span id="workerPreview">
-            0
-        </span>
-
-    </div>
-
-    <br>
-
-    <div class="task-meta">
-
-        <span>
-            Total Cost:
-        </span>
-
-        <span
-            id="totalCost"
-            class="task-reward">
-
-            ৳0
-
-        </span>
-
-    </div>
-
-</div>
-
-
-<!-- SUBMIT -->
-
-<button
-    id="createTaskBtn"
-    class="btn btn-primary">
-
-    Create Task
-
-</button>
-
-<br><br><br><br>
-
-</div><!-- BOTTOM NAV --><div class="bottom-nav"><a href="index.html">
-    Home
-</a>
-
-<a href="myoffers.html">
-    My Offers
-</a>
-
-<a href="createoffer.html"
-   class="active">
-    Create
-</a>
-
-<a href="mytasks.html">
-    My Tasks
-</a>
-
-<a href="profile.html">
-    Profile
-</a>
-
-</div><script src="js/core.js"></script><script src="js/createoffer.js"></script></body>
-      </html>
+</html>
