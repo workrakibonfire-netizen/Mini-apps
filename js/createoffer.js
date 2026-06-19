@@ -14,6 +14,75 @@ document.getElementById("duration");
 const createBtn =
 document.getElementById("createTaskBtn");
 
+const addProofBtn =
+document.getElementById("addProofBtn");
+
+/* =====================================
+PROOF REQUIREMENTS
+===================================== */
+
+let proofCount = 1;
+
+addProofBtn.addEventListener(
+"click",
+() => {
+
+    if (proofCount >= 3) {
+
+        toast(
+            "Maximum 3 proof requirements allowed"
+        );
+
+        return;
+    }
+
+    proofCount++;
+
+    const container =
+        document.getElementById(
+            "proofContainer"
+        );
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.className =
+        "proof-item";
+
+    div.style.marginTop =
+        "15px";
+
+    div.innerHTML = `
+
+        <select class="select proof-type">
+
+            <option value="text">
+                Text Proof
+            </option>
+
+            <option value="screenshot">
+                Screenshot Proof
+            </option>
+
+        </select>
+
+        <br><br>
+
+        <input
+            type="text"
+            class="input proof-label"
+            placeholder="Proof Requirement">
+
+    `;
+
+    container.appendChild(div);
+
+}
+
+);
+
 /* =====================================
 COST CALCULATOR
 ===================================== */
@@ -130,6 +199,28 @@ if (!validateForm()) {
     return;
 }
 
+const proofs = [];
+
+document
+    .querySelectorAll(".proof-item")
+    .forEach(item => {
+
+        proofs.push({
+
+            type:
+                item.querySelector(
+                    ".proof-type"
+                ).value,
+
+            label:
+                item.querySelector(
+                    ".proof-label"
+                ).value
+
+        });
+
+    });
+
 const payload = {
 
     type:
@@ -162,10 +253,8 @@ const payload = {
             "instructions"
         ).value,
 
-    proof:
-        document.getElementById(
-            "proof"
-        ).value
+    proofs: proofs
+
 };
 
 console.log(
