@@ -1,127 +1,220 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
 
-<title>Task Marketplace</title><link rel="stylesheet"
-      href="css/style.css"><script src="https://telegram.org/js/telegram-web-app.js"></script></head><body><div class="container"><!-- HEADER -->
+<head>
 
-<div class="header">
+    <meta charset="UTF-8">
 
-    <div class="logo">
-        🚀 TaskHub
-    </div>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <div>
-        <span id="username">
+    <title>EarnHub</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+            💰 EarnHub
+        </div>
+
+        <div id="username">
             Loading...
-        </span>
+        </div>
+
     </div>
 
-</div>
+    <!-- BALANCE -->
 
+    <div class="balance-card">
 
-<!-- BALANCE CARD -->
+        <div class="balance-label">
+            Available Balance
+        </div>
 
-<div class="balance-card">
+        <div class="balance-amount"
+             id="main-balance">
 
-    <div class="balance-label">
-        Available Balance
+            ৳0.00
+
+        </div>
+
     </div>
 
-    <div class="balance-amount"
-         id="main-balance">
-        ৳0.00
+    <!-- QUICK STATS -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-value"
+                 id="availableTasks">
+
+                0
+
+            </div>
+
+            <div class="stat-label">
+                Tasks
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-value"
+                 id="totalEarned">
+
+                ৳0
+
+            </div>
+
+            <div class="stat-label">
+                Earned
+            </div>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-value"
+                 id="pendingReviews">
+
+                0
+
+            </div>
+
+            <div class="stat-label">
+                Pending
+            </div>
+
+        </div>
+
     </div>
 
-</div>
+    <!-- SEARCH -->
 
+    <div class="card">
 
-<!-- SEARCH -->
+        <input
+            type="text"
+            class="input"
+            id="searchInput"
+            placeholder="Search Tasks...">
 
-<div class="card">
+    </div>
 
-    <input
-        type="text"
-        class="input"
-        id="searchInput"
-        placeholder="Search Tasks">
+    <!-- CATEGORY FILTER -->
 
-</div>
+    <div class="card">
 
+        <div class="categories">
 
-<!-- CATEGORIES -->
+            <button class="cat-btn active"
+                    data-category="all">
+                All
+            </button>
 
-<div class="card">
+            <button class="cat-btn"
+                    data-category="Telegram">
+                Telegram
+            </button>
 
-    <h3>
-        Categories
+            <button class="cat-btn"
+                    data-category="YouTube">
+                YouTube
+            </button>
+
+            <button class="cat-btn"
+                    data-category="Facebook">
+                Facebook
+            </button>
+
+            <button class="cat-btn"
+                    data-category="TikTok">
+                TikTok
+            </button>
+
+            <button class="cat-btn"
+                    data-category="Website">
+                Website
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- TITLE -->
+
+    <h3 style="margin-bottom:15px;">
+        🔥 Available Tasks
     </h3>
 
-    <br>
+    <!-- TASKS -->
 
-    <div class="categories">
-
-        <button class="cat-btn active">
-            All
-        </button>
-
-        <button class="cat-btn">
-            Telegram
-        </button>
-
-        <button class="cat-btn">
-            YouTube
-        </button>
-
-        <button class="cat-btn">
-            Facebook
-        </button>
-
-        <button class="cat-btn">
-            TikTok
-        </button>
-
-        <button class="cat-btn">
-            Website
-        </button>
+    <div id="taskContainer">
 
     </div>
 
-</div>
-
-
-<!-- TASK LIST -->
-
-<div id="taskContainer">
-
-    <!-- Dynamic Tasks -->
+    <br><br><br><br><br><br>
 
 </div>
+
+<!-- BOTTOM NAV -->
 
 <div class="bottom-nav">
 
-    <a href="index.html" class="active">
+    <a href="index.html"
+       class="active">
+
         <span class="nav-icon">🔥</span>
         <span class="nav-text">Earn</span>
+
     </a>
 
     <a href="myoffers.html">
+
         <span class="nav-icon">💼</span>
         <span class="nav-text">My Offers</span>
+
     </a>
 
     <a href="createoffer.html">
+
         <span class="nav-icon">➕</span>
         <span class="nav-text">Create</span>
+
     </a>
 
     <a href="mytasks.html">
+
         <span class="nav-icon">🗂</span>
         <span class="nav-text">My Tasks</span>
+
     </a>
 
     <a href="profile.html">
+
         <span class="nav-icon">👤</span>
         <span class="nav-text">Profile</span>
+
     </a>
 
 </div>
+
+<script src="js/core.js"></script>
+<script src="js/offers.js"></script>
+
+</body>
+          </html>
