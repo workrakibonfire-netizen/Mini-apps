@@ -405,3 +405,40 @@ RESPONSIVE
 }
 
   }
+/* ======================
+CATEGORY BUTTONS
+====================== */
+
+.categories {
+
+display: flex;
+
+gap: 10px;
+
+flex-wrap: wrap;
+
+}
+
+.cat-btn {
+
+background: var(--bg-secondary);
+
+color: white;
+
+border: none;
+
+padding: 10px 14px;
+
+border-radius: 12px;
+
+cursor: pointer;
+
+}
+
+.cat-btn.active {
+
+background: var(--success);
+
+color: white;
+
+    }
