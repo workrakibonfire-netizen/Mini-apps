@@ -1,77 +1,101 @@
 /* =====================================
-   MY OFFERS
-   ===================================== */
+   OFFERS PAGE
+===================================== */
 
-const OFFERS = [
+const TASKS = [
 
     {
         id: 1,
+        type: "Telegram",
         title: "Join Telegram Channel",
         reward: 2,
-        status: "processing"
+        workers: 120,
+        thumbnail:
+            "https://via.placeholder.com/400x200",
+        duration: 3
     },
 
     {
         id: 2,
+        type: "YouTube",
         title: "Subscribe YouTube Channel",
         reward: 5,
-        status: "pending"
+        workers: 85,
+        thumbnail:
+            "https://via.placeholder.com/400x200",
+        duration: 7
     },
 
     {
         id: 3,
-        title: "Follow TikTok Account",
-        reward: 4,
-        status: "approved"
+        type: "Facebook",
+        title: "Like Facebook Page",
+        reward: 3,
+        workers: 60,
+        thumbnail:
+            "https://via.placeholder.com/400x200",
+        duration: 2
     },
 
     {
         id: 4,
-        title: "Like Facebook Page",
-        reward: 3,
-        status: "rejected"
+        type: "TikTok",
+        title: "Follow TikTok Account",
+        reward: 4,
+        workers: 45,
+        thumbnail:
+            "https://via.placeholder.com/400x200",
+        duration: 5
+    },
+
+    {
+        id: 5,
+        type: "Website",
+        title: "Visit Website",
+        reward: 1,
+        workers: 300,
+        thumbnail:
+            "https://via.placeholder.com/400x200",
+        duration: 1
     }
 
 ];
 
-let currentTab = "processing";
+let currentCategory = "all";
 
 
 /* =====================================
-   CARD
-   ===================================== */
+   TASK CARD
+===================================== */
 
-function offerCard(task) {
-
-    let actionButton = "";
-
-    if (task.status === "processing") {
-
-        actionButton = `
-            <button
-                class="btn btn-primary"
-                onclick="submitProof(${task.id})">
-
-                Submit Proof
-
-            </button>
-        `;
-    }
+function taskCard(task) {
 
     return `
 
         <div class="task-card">
+
+            <img
+                src="${task.thumbnail}"
+                style="
+                    width:100%;
+                    border-radius:12px;
+                    margin-bottom:12px;
+                ">
 
             <div class="task-top">
 
                 <div>
 
                     <div class="task-title">
+
                         ${task.title}
+
                     </div>
 
                     <div class="small">
-                        Task #${task.id}
+
+                        ${task.type}
+
                     </div>
 
                 </div>
@@ -86,36 +110,98 @@ function offerCard(task) {
 
             <br>
 
-            <span class="status ${task.status}">
-                ${task.status.toUpperCase()}
-            </span>
+            <div class="task-meta">
 
-            <br><br>
+                <span>
+                    Workers Left
+                </span>
 
-            ${actionButton}
+                <span>
+                    ${task.workers}
+                </span>
+
+            </div>
+
+            <br>
+
+            <div class="task-meta">
+
+                <span>
+                    Duration
+                </span>
+
+                <span>
+                    ${task.duration} Days
+                </span>
+
+            </div>
+
+            <br>
+
+            <button
+                class="btn btn-primary"
+                onclick="startTask(${task.id})">
+
+                Start Task
+
+            </button>
 
         </div>
 
     `;
+
 }
 
 
 /* =====================================
-   RENDER
-   ===================================== */
+   RENDER TASKS
+===================================== */
 
-function renderOffers(status) {
+function renderTasks() {
 
     const container =
         document.getElementById(
-            "offersContainer"
+            "taskContainer"
         );
 
-    const filtered =
-        OFFERS.filter(
-            offer =>
-            offer.status === status
-        );
+    const keyword =
+        document
+        .getElementById(
+            "searchInput"
+        )
+        .value
+        .toLowerCase();
+
+    let filtered =
+        TASKS.filter(task => {
+
+            const categoryMatch =
+
+                currentCategory ===
+                "all"
+
+                ||
+
+                task.type ===
+                currentCategory;
+
+            const searchMatch =
+
+                task.title
+                .toLowerCase()
+                .includes(keyword);
+
+            return (
+                categoryMatch &&
+                searchMatch
+            );
+
+        });
+
+    document.getElementById(
+        "availableTasks"
+    ).innerText =
+        filtered.length;
 
     if (!filtered.length) {
 
@@ -132,7 +218,7 @@ function renderOffers(status) {
                     <br>
 
                     <p>
-                        Nothing available here.
+                        Try another category.
                     </p>
 
                 </center>
@@ -145,35 +231,25 @@ function renderOffers(status) {
     }
 
     container.innerHTML =
-        filtered.map(
-            offerCard
-        ).join("");
+
+        filtered
+        .map(taskCard)
+        .join("");
 
 }
 
 
 /* =====================================
-   SUBMIT PROOF
-   ===================================== */
+   CATEGORY FILTER
+===================================== */
 
-function submitProof(id) {
-
-    toast(
-        "Open Proof Form for Task #" + id
-    );
-
-}
-
-
-/* =====================================
-   TABS
-   ===================================== */
-
-function initTabs() {
+function initCategories() {
 
     const buttons =
-        document.querySelectorAll(
-            ".tab-btn"
+
+        document
+        .querySelectorAll(
+            ".cat-btn"
         );
 
     buttons.forEach(btn => {
@@ -183,7 +259,8 @@ function initTabs() {
             function() {
 
                 buttons.forEach(
-                    b => b.classList.remove(
+                    b =>
+                    b.classList.remove(
                         "active"
                     )
                 );
@@ -192,12 +269,10 @@ function initTabs() {
                     "active"
                 );
 
-                currentTab =
-                    this.dataset.tab;
+                currentCategory =
+                    this.dataset.category;
 
-                renderOffers(
-                    currentTab
-                );
+                renderTasks();
 
             }
         );
@@ -208,18 +283,142 @@ function initTabs() {
 
 
 /* =====================================
+   SEARCH
+===================================== */
+
+function initSearch() {
+
+    const search =
+
+        document.getElementById(
+            "searchInput"
+        );
+
+    search.addEventListener(
+        "input",
+        renderTasks
+    );
+
+}
+
+
+/* =====================================
+   START TASK
+===================================== */
+
+function startTask(id) {
+
+    const task =
+
+        TASKS.find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    toast(
+        "Opening: " +
+        task.title
+    );
+
+    /*
+    Future:
+
+    Open Modal
+
+    Show Instructions
+
+    Accept Task
+
+    Go To Link
+
+    */
+
+}
+
+
+/* =====================================
+   LOAD USER
+===================================== */
+
+function loadHomeUser() {
+
+    const user =
+        getTelegramUser();
+
+    if (!user) return;
+
+    document.getElementById(
+        "username"
+    ).innerText =
+
+        user.first_name ||
+        "User";
+
+}
+
+
+/* =====================================
+   LOAD BALANCE
+===================================== */
+
+function loadHomeBalance() {
+
+    document.getElementById(
+        "main-balance"
+    ).innerText =
+
+        "৳" +
+        money(
+            APP.balance.main
+        );
+
+}
+
+
+/* =====================================
+   LOAD STATS
+===================================== */
+
+function loadStats() {
+
+    document.getElementById(
+        "totalEarned"
+    ).innerText =
+
+        "৳" +
+        money(
+            APP.balance.main
+        );
+
+    document.getElementById(
+        "pendingReviews"
+    ).innerText =
+
+        APP.myOffers.length || 0;
+
+}
+
+
+/* =====================================
    INIT
-   ===================================== */
+===================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        renderOffers(
-            currentTab
-        );
+        loadHomeUser();
 
-        initTabs();
+        loadHomeBalance();
+
+        loadStats();
+
+        initCategories();
+
+        initSearch();
+
+        renderTasks();
 
     }
 );
