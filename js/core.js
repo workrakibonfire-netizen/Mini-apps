@@ -30,7 +30,8 @@ config: {
 TELEGRAM SDK
 ===================================== */
 
-const tg = window.Telegram?.WebApp;
+const tg =
+window.Telegram?.WebApp;
 
 if (tg) {
 
@@ -38,12 +39,14 @@ tg.ready();
 
 tg.expand();
 
-document.body.classList.add("telegram-app");
+document.body.classList.add(
+    "telegram-app"
+);
 
 }
 
 /* =====================================
-USER SESSION
+TELEGRAM USER
 ===================================== */
 
 function getTelegramUser() {
@@ -61,51 +64,99 @@ LOCAL STORAGE
 const Storage = {
 
 set(key, value) {
+
     localStorage.setItem(
         key,
         JSON.stringify(value)
     );
+
 },
 
 get(key) {
 
-    const data =
-        localStorage.getItem(key);
+    try {
 
-    if (!data) return null;
+        const data =
+            localStorage.getItem(
+                key
+            );
 
-    return JSON.parse(data);
+        if (!data) {
+            return null;
+        }
+
+        return JSON.parse(data);
+
+    } catch {
+
+        return null;
+
+    }
+
 },
 
 remove(key) {
-    localStorage.removeItem(key);
+
+    localStorage.removeItem(
+        key
+    );
+
 }
 
 };
 
 /* =====================================
-API REQUEST
+API
 ===================================== */
 
-async function api(endpoint, method = "GET", body = null) {
+async function api(
+endpoint,
+method = "GET",
+body = null
+) {
 
-const options = {
-    method,
-    headers: {
-        "Content-Type": "application/json"
+try {
+
+    const options = {
+
+        method,
+
+        headers: {
+            "Content-Type":
+                "application/json"
+        }
+
+    };
+
+    if (body) {
+
+        options.body =
+            JSON.stringify(
+                body
+            );
+
     }
-};
 
-if (body) {
-    options.body = JSON.stringify(body);
+    const response =
+        await fetch(
+            APP.config.api +
+            endpoint,
+            options
+        );
+
+    return await response.json();
+
+} catch (error) {
+
+    console.error(error);
+
+    toast(
+        "Network Error"
+    );
+
+    return null;
+
 }
-
-const response = await fetch(
-    APP.config.api + endpoint,
-    options
-);
-
-return await response.json();
 
 }
 
@@ -120,15 +171,20 @@ try {
     const data =
         await api("/user");
 
-    APP.user = data;
+    if (data) {
+
+        APP.user = data;
+
+    }
 
     return data;
 
-} catch (err) {
+} catch (error) {
 
-    console.error(err);
+    console.error(error);
 
     return null;
+
 }
 
 }
@@ -144,15 +200,20 @@ try {
     const data =
         await api("/balance");
 
-    APP.balance = data;
+    if (data) {
+
+        APP.balance = data;
+
+    }
 
     return data;
 
-} catch (err) {
+} catch (error) {
 
-    console.error(err);
+    console.error(error);
 
     return null;
+
 }
 
 }
@@ -168,32 +229,18 @@ try {
     const data =
         await api("/tasks");
 
-    APP.tasks = data;
+    APP.tasks =
+        data || [];
 
-    return data;
+    return APP.tasks;
 
-} catch (err) {
+} catch (error) {
 
-    console.error(err);
+    console.error(error);
 
     return [];
-}
 
 }
-
-/* =====================================
-APP INIT
-===================================== */
-
-async function initApp() {
-
-showLoader();
-
-await loadUser();
-
-await loadBalance();
-
-hideLoader();
 
 }
 
@@ -203,8 +250,60 @@ MONEY FORMAT
 
 function money(value) {
 
-return Number(value)
-    .toFixed(2);
+return Number(
+    value || 0
+).toFixed(2);
+
+}
+
+/* =====================================
+DATE FORMAT
+===================================== */
+
+function formatDate(
+timestamp
+) {
+
+const date =
+    new Date(timestamp);
+
+return date.toLocaleDateString();
+
+}
+
+/* =====================================
+STATUS BADGE
+===================================== */
+
+function statusBadge(
+status
+) {
+
+return `
+
+    <span
+        class="status ${status}">
+
+        ${status.toUpperCase()}
+
+    </span>
+
+`;
+
+}
+
+/* =====================================
+COPY
+===================================== */
+
+function copy(text) {
+
+navigator.clipboard
+    .writeText(text);
+
+toast(
+    "Copied Successfully"
+);
 
 }
 
@@ -215,7 +314,9 @@ TOAST
 function toast(message) {
 
 const toast =
-    document.createElement("div");
+    document.createElement(
+        "div"
+    );
 
 toast.className =
     "app-toast";
@@ -223,7 +324,9 @@ toast.className =
 toast.innerText =
     message;
 
-document.body.appendChild(toast);
+document.body.appendChild(
+    toast
+);
 
 setTimeout(() => {
 
@@ -247,7 +350,9 @@ let loader =
 if (loader) return;
 
 loader =
-    document.createElement("div");
+    document.createElement(
+        "div"
+    );
 
 loader.id =
     "global-loader";
@@ -255,7 +360,9 @@ loader.id =
 loader.innerHTML =
     '<div class="loader"></div>';
 
-document.body.appendChild(loader);
+document.body.appendChild(
+    loader
+);
 
 }
 
@@ -267,13 +374,15 @@ const loader =
     );
 
 if (loader) {
+
     loader.remove();
+
 }
 
 }
 
 /* =====================================
-PAGE NAVIGATION
+NAVIGATION
 ===================================== */
 
 function go(page) {
@@ -292,6 +401,22 @@ function logout() {
 Storage.remove("user");
 
 location.reload();
+
+}
+
+/* =====================================
+APP INIT
+===================================== */
+
+async function initApp() {
+
+showLoader();
+
+await loadUser();
+
+await loadBalance();
+
+hideLoader();
 
 }
 
