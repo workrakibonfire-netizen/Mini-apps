@@ -1,304 +1,383 @@
 /* =====================================
-CREATE OFFER
+   CREATE TASK PAGE
 ===================================== */
 
 const rewardInput =
-document.getElementById("reward");
+    document.getElementById("reward");
 
 const workersInput =
-document.getElementById("workers");
+    document.getElementById("workers");
 
 const durationInput =
-document.getElementById("duration");
+    document.getElementById("duration");
 
 const createBtn =
-document.getElementById("createTaskBtn");
+    document.getElementById("createTaskBtn");
 
 const addProofBtn =
-document.getElementById("addProofBtn");
+    document.getElementById("addProofBtn");
+
+const imageInput =
+    document.getElementById(
+        "instructionImage"
+    );
+
+const imagePreview =
+    document.getElementById(
+        "imagePreview"
+    );
+
 
 /* =====================================
-PROOF REQUIREMENTS
+   THUMBNAIL PREVIEW
+===================================== */
+
+if (imageInput) {
+
+    imageInput.addEventListener(
+        "change",
+        function () {
+
+            const file =
+                this.files[0];
+
+            if (!file) return;
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function (e) {
+
+                    imagePreview.src =
+                        e.target.result;
+
+                    imagePreview.style.display =
+                        "block";
+
+                };
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================
+   PROOF REQUIREMENTS
 ===================================== */
 
 let proofCount = 1;
 
-addProofBtn.addEventListener(
-"click",
-() => {
+if (addProofBtn) {
 
-    if (proofCount >= 3) {
+    addProofBtn.addEventListener(
+        "click",
+        () => {
 
-        toast(
-            "Maximum 3 proof requirements allowed"
-        );
+            if (proofCount >= 3) {
 
-        return;
-    }
+                toast(
+                    "Maximum 3 proof requirements allowed"
+                );
 
-    proofCount++;
+                return;
+            }
 
-    const container =
-        document.getElementById(
-            "proofContainer"
-        );
+            proofCount++;
 
-    const div =
-        document.createElement(
-            "div"
-        );
+            const container =
+                document.getElementById(
+                    "proofContainer"
+                );
 
-    div.className =
-        "proof-item";
+            const div =
+                document.createElement(
+                    "div"
+                );
 
-    div.style.marginTop =
-        "15px";
+            div.className =
+                "proof-item";
 
-    div.innerHTML = `
+            div.style.marginTop =
+                "15px";
 
-        <select class="select proof-type">
+            div.innerHTML = `
 
-            <option value="text">
-                Text Proof
-            </option>
+                <select class="select proof-type">
 
-            <option value="screenshot">
-                Screenshot Proof
-            </option>
+                    <option value="text">
+                        Text Proof
+                    </option>
 
-        </select>
+                    <option value="screenshot">
+                        Screenshot Proof
+                    </option>
 
-        <br><br>
+                </select>
 
-        <input
-            type="text"
-            class="input proof-label"
-            placeholder="Proof Requirement">
+                <br><br>
 
-    `;
+                <input
+                    type="text"
+                    class="input proof-label"
+                    placeholder="Proof Requirement">
 
-    container.appendChild(div);
+            `;
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
 
 }
 
-);
 
 /* =====================================
-COST CALCULATOR
+   COST CALCULATOR
 ===================================== */
 
 function updateCost() {
 
-const reward =
-    Number(rewardInput.value) || 0;
+    const reward =
+        Number(
+            rewardInput.value
+        ) || 0;
 
-const workers =
-    Number(workersInput.value) || 0;
+    const workers =
+        Number(
+            workersInput.value
+        ) || 0;
 
-const total =
-    reward * workers;
+    const total =
+        reward * workers;
 
-document.getElementById(
-    "rewardPreview"
-).innerText =
-    "৳" + reward.toFixed(2);
+    document.getElementById(
+        "rewardPreview"
+    ).innerText =
+        "৳" + totalMoney(reward);
 
-document.getElementById(
-    "workerPreview"
-).innerText =
-    workers;
+    document.getElementById(
+        "workerPreview"
+    ).innerText =
+        workers;
 
-document.getElementById(
-    "totalCost"
-).innerText =
-    "৳" + total.toFixed(2);
+    document.getElementById(
+        "totalCost"
+    ).innerText =
+        "৳" + totalMoney(total);
 
 }
 
+
 /* =====================================
-VALIDATION
+   VALIDATION
 ===================================== */
 
 function validateForm() {
 
-const reward =
-    Number(rewardInput.value);
+    const reward =
+        Number(
+            rewardInput.value
+        );
 
-const workers =
-    Number(workersInput.value);
+    const workers =
+        Number(
+            workersInput.value
+        );
 
-const duration =
-    Number(durationInput.value);
+    const duration =
+        Number(
+            durationInput.value
+        );
 
-const link =
-    document.getElementById(
-        "taskLink"
-    ).value;
+    const link =
+        document.getElementById(
+            "taskLink"
+        ).value;
 
-const instructions =
-    document.getElementById(
-        "instructions"
-    ).value;
+    const instructions =
+        document.getElementById(
+            "instructions"
+        ).value;
 
-if (!reward || reward <= 0) {
+    if (!reward || reward <= 0) {
 
-    toast(
-        "Enter valid reward"
-    );
+        toast(
+            "Enter valid reward amount"
+        );
 
-    return false;
+        return false;
+    }
+
+    if (workers < 10) {
+
+        toast(
+            "Minimum 10 workers required"
+        );
+
+        return false;
+    }
+
+    if (duration > 7) {
+
+        toast(
+            "Maximum duration is 7 days"
+        );
+
+        return false;
+    }
+
+    if (!link) {
+
+        toast(
+            "Task link required"
+        );
+
+        return false;
+    }
+
+    if (!instructions) {
+
+        toast(
+            "Instructions required"
+        );
+
+        return false;
+    }
+
+    return true;
+
 }
 
-if (workers < 10) {
-
-    toast(
-        "Minimum 10 workers required"
-    );
-
-    return false;
-}
-
-if (duration > 7) {
-
-    toast(
-        "Maximum duration is 7 days"
-    );
-
-    return false;
-}
-
-if (!link) {
-
-    toast(
-        "Task link required"
-    );
-
-    return false;
-}
-
-if (!instructions) {
-
-    toast(
-        "Instructions required"
-    );
-
-    return false;
-}
-
-return true;
-
-}
 
 /* =====================================
-CREATE TASK
+   CREATE TASK
 ===================================== */
 
 async function createTask() {
 
-if (!validateForm()) {
-    return;
-}
+    if (!validateForm()) {
+        return;
+    }
 
-const proofs = [];
+    const proofs = [];
 
-document
-    .querySelectorAll(".proof-item")
-    .forEach(item => {
+    document
+        .querySelectorAll(
+            ".proof-item"
+        )
+        .forEach(item => {
 
-        proofs.push({
+            proofs.push({
 
-            type:
-                item.querySelector(
-                    ".proof-type"
-                ).value,
+                type:
+                    item.querySelector(
+                        ".proof-type"
+                    ).value,
 
-            label:
-                item.querySelector(
-                    ".proof-label"
-                ).value
+                label:
+                    item.querySelector(
+                        ".proof-label"
+                    ).value
+
+            });
 
         });
 
-    });
+    const payload = {
 
-const payload = {
+        taskType:
+            document.getElementById(
+                "taskType"
+            ).value,
 
-    type:
-        document.getElementById(
-            "taskType"
-        ).value,
+        reward:
+            Number(
+                rewardInput.value
+            ),
 
-    reward:
-        Number(
-            rewardInput.value
-        ),
+        workers:
+            Number(
+                workersInput.value
+            ),
 
-    workers:
-        Number(
-            workersInput.value
-        ),
+        duration:
+            Number(
+                durationInput.value
+            ),
 
-    duration:
-        Number(
-            durationInput.value
-        ),
+        taskLink:
+            document.getElementById(
+                "taskLink"
+            ).value,
 
-    link:
-        document.getElementById(
-            "taskLink"
-        ).value,
+        instructions:
+            document.getElementById(
+                "instructions"
+            ).value,
 
-    instructions:
-        document.getElementById(
-            "instructions"
-        ).value,
+        thumbnail:
+            imagePreview.src || "",
 
-    proofs: proofs
+        proofs:
+            proofs,
 
-};
+        createdAt:
+            Date.now()
 
-console.log(
-    "Task Payload:",
-    payload
-);
+    };
 
-toast(
-    "Task Created Successfully"
-);
+    console.log(
+        "TASK PAYLOAD",
+        payload
+    );
 
-/*
-Future API
+    toast(
+        "Task Created Successfully"
+    );
 
-await api(
-  "/task/create",
-  "POST",
-  payload
-);
-*/
+    /*
+    FUTURE API
+
+    await api(
+        "/task/create",
+        "POST",
+        payload
+    );
+    */
 
 }
 
+
 /* =====================================
-EVENTS
+   EVENTS
 ===================================== */
 
 rewardInput.addEventListener(
-"input",
-updateCost
+    "input",
+    updateCost
 );
 
 workersInput.addEventListener(
-"input",
-updateCost
+    "input",
+    updateCost
 );
 
 createBtn.addEventListener(
-"click",
-createTask
+    "click",
+    createTask
 );
 
+
 /* =====================================
-INIT
+   INIT
 ===================================== */
 
 updateCost();
