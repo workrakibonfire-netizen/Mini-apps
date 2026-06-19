@@ -1,117 +1,256 @@
-// ১. টেলিগ্রাম ওয়েব অ্যাপ ইনিশিয়ালাইজেশন
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand(); // অ্যাপটি পুরো স্ক্রিনে খোলার জন্য
+// ========================================
+// Task Marketplace Mini App
+// Version: 1.0
+// ========================================
 
-// ২. স্টেট ম্যানেজমেন্ট (ইউজারের ডেটা লোকাল স্টোরেজে সেভ থাকবে)
-let balance = parseInt(localStorage.getItem('tap_balance')) || 0;
-let energy = parseInt(localStorage.getItem('tap_energy')) || 100;
-const maxEnergy = 100;
+// Current User Data
 
-// ৩. টেলিগ্রাম ইউজার প্রোফাইল সেটআপ
-const usernameDoc = document.getElementById("username");
-const userAvatarDoc = document.getElementById("user-avatar");
+const currentUser = {
+    id: 0,
+    name: "",
+    balance: 0,
+    depositBalance: 0,
+    withdrawBalance: 0
+};
 
-if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    if (usernameDoc) usernameDoc.textContent = user.first_name || user.username;
-    if (userAvatarDoc && user.photo_url) {
-        userAvatarDoc.src = user.photo_url;
-    }
-} else {
-    if (usernameDoc) usernameDoc.textContent = "Crypto Miner";
-}
+// ========================================
+// Navigation
+// ========================================
 
-// ৪. ড্যাশবোর্ড আপডেট ফাংশন
-function updateUI() {
-    const balanceDoc = document.getElementById("balance");
-    const energyDoc = document.getElementById("energy");
-    
-    if (balanceDoc) balanceDoc.textContent = balance;
-    if (energyDoc) energyDoc.textContent = `${energy}/${maxEnergy}`;
-    
-    // ডেটা ব্রাউজারে সেভ করে রাখা
-    localStorage.setItem('tap_balance', balance);
-    localStorage.setItem('tap_energy', energy);
-}
+document.addEventListener("DOMContentLoaded", () => {
 
-// ৫. ট্যাপ-টু-আর্ন (Tap to Earn) সিস্টেম
-const coinButton = document.getElementById("coin-btn");
-if (coinButton) {
-    coinButton.addEventListener("click", (e) => {
-        if (energy > 0) {
-            balance += 1;
-            energy -= 1;
-            updateUI();
-            
-            // ট্যাপ করার জায়গায় ভাসমান +1 অ্যানিমেশন
-            createFloatingText(e);
-        } else {
-            tg.showAlert("আপনার এনার্জি শেষ! একটু অপেক্ষা করুন।");
-        }
-    });
-}
+    initializeApp();
 
-function createFloatingText(e) {
-    const coinRect = e.target.getBoundingClientRect();
-    const x = e.clientX - coinRect.left;
-    const y = e.clientY - coinRect.top;
-    
-    const clickText = document.createElement("span");
-    clickText.innerText = "+1";
-    clickText.style.position = "absolute";
-    clickText.style.left = `${x}px`;
-    clickText.style.top = `${y}px`;
-    clickText.style.color = "#fff";
-    clickText.style.fontWeight = "bold";
-    clickText.style.animation = "floatUp 0.6s ease-out forwards";
-    
-    e.target.appendChild(clickText);
-    setTimeout(() => clickText.remove(), 600);
-}
-
-// ৬. এনার্জি অটো-রিকভারি (প্রতি ৩ সেকেন্ডে ১ করে এনার্জি বাড়বে)
-setInterval(() => {
-    if (energy < maxEnergy) {
-        energy += 1;
-        updateUI();
-    }
-}, 3000);
-
-// ৭. ডেইলি টাস্ক (Task) সিস্টেম
-const taskButtons = document.querySelectorAll(".task-btn");
-taskButtons.forEach(button => {
-    button.addEventListener("click", (e) => {
-        const reward = parseInt(e.target.getAttribute("data-reward")) || 500;
-        const taskId = e.target.getAttribute("data-task-id");
-        
-        if (!localStorage.getItem(`task_${taskId}`)) {
-            balance += reward;
-            localStorage.setItem(`task_${taskId}`, "completed");
-            e.target.innerText = "Completed";
-            e.target.disabled = true;
-            updateUI();
-            tg.showAlert(`অভিনন্দন! আপনি ${reward} কয়েন পেয়েছেন।`);
-        }
-    });
 });
 
-// ৮. রেফারেল (Invite Friends) সিস্টেম
-const inviteButton = document.getElementById("invite-btn");
-if (inviteButton) {
-    inviteButton.addEventListener("click", () => {
-        const botUsername = "YourBotNameBot"; // আপনার বটের ইউজারনেম এখানে দিন
-        const userId = tg.initDataUnsafe?.user?.id || "user";
-        const inviteLink = `https://t.me/${botUsername}/app?startapp=ref_${userId}`;
-        
-        // টেলিগ্রামের মাধ্যমে বন্ধুদের কাছে শেয়ার করার উইন্ডো খোলা
-        const shareText = encodeURIComponent("আমার সাথে এই মিনি অ্যাপে জয়েন করুন এবং ফ্রি কয়েন আর্ন করুন! 🚀");
-        const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${shareText}`;
-        
-        window.open(telegramShareUrl, "_blank");
-    });
+function initializeApp() {
+
+    console.log("Mini App Loaded");
+
+    loadProfile();
+    loadBalance();
+    loadTasks();
+    setupNavigation();
+
 }
 
-// অ্যাপ রান হওয়ার সাথে সাথে স্ক্রিন আপডেট করা
-updateUI();
-  
+// ========================================
+// Profile
+// ========================================
+
+function loadProfile() {
+
+    const profileBtn = document.querySelector(".profile-btn");
+
+    if (!profileBtn) return;
+
+    profileBtn.addEventListener("click", () => {
+
+        console.log("Open Profile");
+
+        // Future:
+        // Open Profile Modal
+
+    });
+
+}
+
+// ========================================
+// Balance
+// ========================================
+
+function loadBalance() {
+
+    const balanceElement = document.querySelector(".balance-box h2");
+
+    if (!balanceElement) return;
+
+    balanceElement.textContent =
+        `৳ ${currentUser.balance.toFixed(2)}`;
+
+}
+
+// ========================================
+// Task Loading
+// ========================================
+
+const taskData = [
+
+    {
+        id: 1,
+        title: "Join Telegram Channel",
+        reward: 5,
+        participants: 3719,
+        expiry: "2 Days"
+    },
+
+    {
+        id: 2,
+        title: "YouTube Subscribe",
+        reward: 3,
+        participants: 2911,
+        expiry: "1 Day"
+    }
+
+];
+
+function loadTasks() {
+
+    console.log("Loading Tasks");
+
+    // Future:
+    // Fetch tasks from API
+
+}
+
+// ========================================
+// Filters
+// ========================================
+
+function filterByType(type) {
+
+    console.log("Selected Type:", type);
+
+}
+
+function filterByTask(task) {
+
+    console.log("Selected Task:", task);
+
+}
+
+// ========================================
+// Task Actions
+// ========================================
+
+function openTask(taskId) {
+
+    console.log("Open Task:", taskId);
+
+}
+
+function startTask(taskId) {
+
+    console.log("Start Task:", taskId);
+
+    // Future:
+    // Open Link
+    // Move to My Offers
+
+}
+
+function submitProof(taskId) {
+
+    console.log("Submit Proof:", taskId);
+
+}
+
+// ========================================
+// My Offers
+// ========================================
+
+function loadMyOffers() {
+
+    console.log("Loading My Offers");
+
+}
+
+// ========================================
+// Create Offer
+// ========================================
+
+function createOffer() {
+
+    console.log("Create Offer");
+
+}
+
+// ========================================
+// My Tasks
+// ========================================
+
+function loadMyTasks() {
+
+    console.log("Loading My Tasks");
+
+}
+
+// ========================================
+// Bottom Navigation
+// ========================================
+
+function setupNavigation() {
+
+    const buttons =
+        document.querySelectorAll(".bottom-nav button");
+
+    buttons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            buttons.forEach(btn =>
+                btn.classList.remove("active")
+            );
+
+            button.classList.add("active");
+
+        });
+
+    });
+
+}
+
+// ========================================
+// API Section
+// ========================================
+
+const API = {
+
+    baseUrl: "",
+
+    async getTasks() {
+
+        try {
+
+            const response =
+                await fetch(`${this.baseUrl}/tasks`);
+
+            return await response.json();
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+};
+
+// ========================================
+// Admin Functions
+// ========================================
+
+function approveTask(taskId) {
+
+    console.log("Approved:", taskId);
+
+}
+
+function rejectTask(taskId, reason) {
+
+    console.log("Rejected:", taskId);
+
+    console.log("Reason:", reason);
+
+}
+
+// ========================================
+// Utility
+// ========================================
+
+function formatMoney(amount) {
+
+    return `৳ ${Number(amount).toFixed(2)}`;
+
+             }
