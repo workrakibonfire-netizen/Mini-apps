@@ -1,231 +1,397 @@
 /* =====================================
-MY TASKS
+   TASK DETAILS PAGE
 ===================================== */
 
-const MY_TASKS = [
+const DEMO_TASKS = [
 
-{
-    id: 1001,
-    title: "Join Telegram Channel",
-    reward: 2,
-    workers: 50,
-    submissions: 12,
-    status: "active"
-},
+    {
+        id: 1,
+        type: "Telegram",
+        title: "Join Telegram Channel",
+        reward: 2,
+        workers: 120,
+        duration: 3,
 
-{
-    id: 1002,
-    title: "Subscribe YouTube Channel",
-    reward: 5,
-    workers: 100,
-    submissions: 25,
-    status: "active"
-},
+        link: "https://t.me/example",
 
-{
-    id: 1003,
-    title: "Follow TikTok Account",
-    reward: 4,
-    workers: 30,
-    submissions: 30,
-    status: "completed"
-}
+        thumbnail:
+            "https://via.placeholder.com/800x400",
+
+        instructions:
+            "Join the Telegram channel and stay for at least 24 hours.",
+
+        proofs: [
+            {
+                type: "screenshot",
+                label: "Channel Joined Screenshot"
+            },
+            {
+                type: "text",
+                label: "Telegram Username"
+            }
+        ]
+    },
+
+    {
+        id: 2,
+        type: "YouTube",
+        title: "Subscribe YouTube Channel",
+        reward: 5,
+        workers: 80,
+        duration: 7,
+
+        link: "https://youtube.com",
+
+        thumbnail:
+            "https://via.placeholder.com/800x400",
+
+        instructions:
+            "Subscribe to the channel and keep subscription active.",
+
+        proofs: [
+            {
+                type: "screenshot",
+                label: "Subscription Screenshot"
+            }
+        ]
+    }
 
 ];
 
+
 /* =====================================
-DASHBOARD STATS
+   GET TASK ID
 ===================================== */
 
-function updateStats() {
+function getTaskId() {
 
-const active =
-    MY_TASKS.filter(
-        task =>
-        task.status === "active"
-    ).length;
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
 
-const pending =
-    MY_TASKS.reduce(
-        (sum, task) =>
-        sum + task.submissions,
-        0
+    return Number(
+        params.get("id")
     );
-
-const locked =
-    MY_TASKS.reduce(
-        (sum, task) =>
-        sum +
-        (
-            task.reward *
-            task.workers
-        ),
-        0
-    );
-
-document.getElementById(
-    "activeTasks"
-).innerText = active;
-
-document.getElementById(
-    "pendingReviews"
-).innerText = pending;
-
-document.getElementById(
-    "lockedBalance"
-).innerText =
-    "৳" + money(locked);
 
 }
 
+
 /* =====================================
-TASK CARD
+   CURRENT TASK
 ===================================== */
 
-function taskCard(task) {
+let currentTask = null;
 
-return `
 
-    <div class="task-card">
+/* =====================================
+   LOAD TASK
+===================================== */
 
-        <div class="task-top">
+function loadTask() {
 
-            <div>
+    const id =
+        getTaskId();
 
-                <div class="task-title">
+    currentTask =
+        DEMO_TASKS.find(
+            task => task.id === id
+        );
 
-                    ${task.title}
+    if (!currentTask) {
 
-                </div>
+        document.body.innerHTML = `
 
-                <div class="small">
+            <div class="container">
 
-                    Task #${task.id}
+                <div class="card">
+
+                    <h2>
+                        Task Not Found
+                    </h2>
 
                 </div>
 
             </div>
 
-            <div class="task-reward">
+        `;
 
-                ৳${money(task.reward)}
+        return;
 
-            </div>
+    }
 
-        </div>
-
-        <br>
-
-        ${statusBadge(task.status)}
-
-        <br><br>
-
-        <div class="task-meta">
-
-            <span>
-                Workers
-            </span>
-
-            <span>
-                ${task.workers}
-            </span>
-
-        </div>
-
-        <br>
-
-        <div class="task-meta">
-
-            <span>
-                Submissions
-            </span>
-
-            <span>
-                ${task.submissions}
-            </span>
-
-        </div>
-
-        <br>
-
-        <button
-            class="btn btn-primary"
-            onclick="viewSubmissions(${task.id})">
-
-            View Submissions
-
-        </button>
-
-    </div>
-
-`;
+    renderTask();
 
 }
 
+
 /* =====================================
-RENDER TASKS
+   RENDER TASK
 ===================================== */
 
-function renderTasks() {
+function renderTask() {
 
-const container =
     document.getElementById(
-        "myTasksContainer"
-    );
+        "taskThumbnail"
+    ).src =
+        currentTask.thumbnail;
 
-if (!MY_TASKS.length) {
+    document.getElementById(
+        "taskTitle"
+    ).innerText =
+        currentTask.title;
 
-    container.innerHTML = `
+    document.getElementById(
+        "taskReward"
+    ).innerText =
+        "৳" +
+        money(
+            currentTask.reward
+        );
 
-        <div class="card">
+    document.getElementById(
+        "taskWorkers"
+    ).innerText =
+        currentTask.workers;
 
-            <center>
+    document.getElementById(
+        "taskDuration"
+    ).innerText =
+        currentTask.duration +
+        " Days";
 
-                <h3>
-                    No Tasks Found
-                </h3>
+    document.getElementById(
+        "taskInstructions"
+    ).innerText =
+        currentTask.instructions;
 
-            </center>
+    renderProofRequirements();
 
-        </div>
-
-    `;
-
-    return;
 }
 
-container.innerHTML =
-    MY_TASKS
-    .map(taskCard)
-    .join("");
-
-}
 
 /* =====================================
-VIEW SUBMISSIONS
+   PROOF REQUIREMENTS
 ===================================== */
 
-function viewSubmissions(id) {
+function renderProofRequirements() {
 
-toast(
-    "Open Submissions For Task #" +
-    id
-);
+    const container =
+        document.getElementById(
+            "proofRequirements"
+        );
+
+    container.innerHTML =
+        currentTask.proofs
+        .map((proof, index) => {
+
+            return `
+
+                <div class="card">
+
+                    ${index + 1}.
+                    ${proof.label}
+
+                    <br>
+
+                    <small>
+
+                        ${proof.type}
+
+                    </small>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
 
 }
 
+
 /* =====================================
-INIT
+   OPEN TASK
 ===================================== */
 
 document.addEventListener(
-"DOMContentLoaded",
-() => {
+    "click",
+    function(e) {
 
-    updateStats();
+        if (
+            e.target.id ===
+            "openTaskBtn"
+        ) {
 
-    renderTasks();
+            window.open(
+                currentTask.link,
+                "_blank"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   SHOW PROOF FORM
+===================================== */
+
+document.addEventListener(
+    "click",
+    function(e) {
+
+        if (
+            e.target.id ===
+            "submitProofBtn"
+        ) {
+
+            buildProofForm();
+
+        }
+
+    }
+);
+
+
+function buildProofForm() {
+
+    document.getElementById(
+        "proofForm"
+    ).style.display =
+        "block";
+
+    const container =
+        document.getElementById(
+            "proofFields"
+        );
+
+    container.innerHTML =
+        "";
+
+    currentTask.proofs.forEach(
+        (proof, index) => {
+
+            let field = "";
+
+            if (
+                proof.type ===
+                "text"
+            ) {
+
+                field = `
+
+                    <label>
+
+                        ${proof.label}
+
+                    </label>
+
+                    <br><br>
+
+                    <input
+                        class="input"
+                        type="text"
+                        data-proof="${index}">
+
+                    <br><br>
+
+                `;
+
+            }
+
+            if (
+                proof.type ===
+                "screenshot"
+            ) {
+
+                field = `
+
+                    <label>
+
+                        ${proof.label}
+
+                    </label>
+
+                    <br><br>
+
+                    <input
+                        type="file"
+                        data-proof="${index}">
+
+                    <br><br>
+
+                `;
+
+            }
+
+            container.innerHTML +=
+                field;
+
+        }
+    );
 
 }
 
+
+/* =====================================
+   SUBMIT PROOF
+===================================== */
+
+function submitProof() {
+
+    const myOffers =
+        Storage.get(
+            "myOffers"
+        ) || [];
+
+    myOffers.push({
+
+        taskId:
+            currentTask.id,
+
+        title:
+            currentTask.title,
+
+        reward:
+            currentTask.reward,
+
+        status:
+            "pending",
+
+        createdAt:
+            Date.now()
+
+    });
+
+    Storage.set(
+        "myOffers",
+        myOffers
+    );
+
+    APP.myOffers =
+        myOffers;
+
+    toast(
+        "Proof Submitted"
+    );
+
+    setTimeout(() => {
+
+        window.location.href =
+            "myoffers.html";
+
+    }, 1000);
+
+}
+
+
+/* =====================================
+   INIT
+===================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    loadTask
 );
