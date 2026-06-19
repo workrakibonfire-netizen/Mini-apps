@@ -1,230 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
-    <style>
-        /* মূল ডিজাইন ও থিম */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Marketplace</title>
 
-        /* হেডার ও ব্যালেন্স সেকশন */
-        .header {
-            width: 100%;
-            background-color: #0088cc;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            box-sizing: border-box;
-            position: relative;
-        }
+<link rel="stylesheet" href="style.css">
 
-        .balance-container {
-            margin-top: 10px;
-            font-size: 24px;
-            font-weight: bold;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        .profile-btn {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            background-color: white;
-            color: #0088cc;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* ট্যাব মেনু (অফার, মাই অফার, ক্রিয়েট অফার) */
-        .tab-container {
-            display: flex;
-            width: 100%;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 15px 0;
-            cursor: pointer;
-            font-weight: bold;
-            color: #555;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab.active {
-            color: #0088cc;
-            border-bottom: 3px solid #0088cc;
-        }
-
-        /* কনটেন্ট এরিয়া */
-        .content {
-            width: 90%;
-            max-width: 500px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .content.active {
-            display: block;
-        }
-
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-        }
-
-        /* ফর্ম উপাদান */
-        input, textarea, button {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button.submit-btn {
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* প্রোফাইল মডাল (পপ-আপ) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .close-btn {
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
 </head>
+
 <body>
 
-    <div class="header">
-        <h2>Mini App</h2>
-        <div class="balance-container">Balance: <span id="main-balance">100</span> Coins</div>
-        <button class="profile-btn" onclick="openModal()">Profile</button>
-    </div>
+<div class="container">
 
-    <div class="tab-container">
-        <div class="tab active" onclick="switchTab('offer')">অফার</div>
-        <div class="tab" onclick="switchTab('my-offer')">মাই অফার</div>
-        <div class="tab" onclick="switchTab('create-offer')">ক্রিয়েট অফার</div>
-    </div>
+    <!-- Header -->
+    <header class="header">
 
-    <div id="offer" class="content active">
-        <div class="card">
-            <h3>স্পেশাল অফার ১</h3>
-            <p>এই কাজটি সম্পূর্ণ করলে ৫০ কয়েন পাবেন।</p>
-            <button class="submit-btn">Claim</button>
+        <div class="balance-box">
+            <span class="balance-label">Balance</span>
+            <h2>৳ 0.00</h2>
         </div>
-        <div class="card">
-            <h3>স্পেশাল অফার ২</h3>
-            <p>বন্ধুদের ইনভাইট করে ১০০ কয়েন জিতে নিন।</p>
-            <button class="submit-btn">Claim</button>
+
+        <div class="profile-btn">
+            <img src="https://i.ibb.co/2n7xQqV/user.png" alt="profile">
         </div>
-    </div>
 
-    <div id="my-offer" class="content">
-        <div class="card">
-            <h3>আপনার চলমান অফার</h3>
-            <p>এখনো কোনো অফার অ্যাক্টিভ নেই।</p>
+    </header>
+
+    <!-- Filter -->
+
+    <section class="filters">
+
+        <select>
+            <option>All Types</option>
+            <option>Telegram</option>
+            <option>YouTube</option>
+            <option>Facebook</option>
+            <option>TikTok</option>
+            <option>App Install</option>
+        </select>
+
+        <select>
+            <option>All Tasks</option>
+        </select>
+
+    </section>
+
+    <!-- Task List -->
+
+    <section class="task-list">
+
+        <div class="task-card">
+
+            <div class="task-left">
+
+                <h3>Join Telegram Channel</h3>
+
+                <p class="participants">
+                    3719 Participants
+                </p>
+
+                <p class="reward">
+                    Reward: ৳5
+                </p>
+
+                <p class="expire">
+                    Expires in 2 Days
+                </p>
+
+            </div>
+
+            <div class="task-right">
+
+                <div class="price">
+                    ৳5
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <div id="create-offer" class="content">
-        <div class="card">
-            <h3>নতুন অফার তৈরি করুন</h3>
-            <label for="offer-title">অফারের নাম:</label>
-            <input type="text" id="offer-title" placeholder="যেমন: নতুন টাস্ক">
-            
-            <label for="offer-desc">বিবরণ:</label>
-            <textarea id="offer-desc" placeholder="অফারের বিস্তারিত লিখুন..."></textarea>
-            
-            <button class="submit-btn" onclick="alert('অফার তৈরি হয়েছে!')">পাবলিশ করুন</button>
+        <div class="task-card">
+
+            <div class="task-left">
+
+                <h3>YouTube Subscribe</h3>
+
+                <p class="participants">
+                    2911 Participants
+                </p>
+
+                <p class="reward">
+                    Reward: ৳3
+                </p>
+
+                <p class="expire">
+                    Expires in 1 Day
+                </p>
+
+            </div>
+
+            <div class="task-right">
+
+                <div class="price">
+                    ৳3
+                </div>
+
+            </div>
+
         </div>
-    </div>
 
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <h3>ইউজার প্রোফাইল</h3>
-            <hr>
-            <p><strong>নাম:</strong> Telegram User</p>
-            <p><strong>মোট ব্যালেন্স:</strong> <span id="modal-balance">100</span> Coins</p>
-            <p><strong>সম্পূর্ণ করা অফার:</strong> ৫টি</p>
-            <button class="close-btn" onclick="closeModal()">বন্ধ করুন</button>
-        </div>
-    </div>
+    </section>
 
-    <script>
-        // ট্যাব পরিবর্তন করার ফাংশন
-        function switchTab(tabId) {
-            // সব কনটেন্ট হাইড করা
-            document.querySelectorAll('.content').forEach(content => {
-                content.classList.remove('active');
-            });
-            // সব ট্যাব থেকে একটিভ ক্লাস বাদ দেওয়া
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+</div>
 
-            // নির্দিষ্ট ট্যাব ও কনটেন্ট শো করা
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+<!-- Bottom Navigation -->
 
-        // প্রোফাইল মডাল খোলার ফাংশন
-        function openModal() {
-            document.getElementById('profile-modal').style.display = 'flex';
-        }
+<nav class="bottom-nav">
 
-        // প্রোফাইল মডাল বন্ধ করার ফাংশন
-        function closeModal() {
-            document.getElementById('profile-modal').style.display = 'none';
-        }
-    </script>
+    <button class="active">
+        Offers
+    </button>
+
+    <button>
+        My Offers
+    </button>
+
+    <button>
+        Create Offer
+    </button>
+
+    <button>
+        My Tasks
+    </button>
+
+</nav>
+
+<script src="script.js"></script>
 
 </body>
-      </html>
+</html>
